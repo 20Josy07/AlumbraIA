@@ -1,12 +1,12 @@
-
 'use client';
 
+import React, { useState, useEffect } from 'react'; // Import useState, useEffect
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight } from 'lucide-react'; 
+import { AlertTriangle, Frown, ArrowRight } from 'lucide-react';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
 
 // Define the HeroSection1 component
 function HeroSection1() {
@@ -36,8 +36,8 @@ function HeroSection1() {
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Link href="/questionnaire" passHref>
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-[0_4px_14px_0_rgb(0,0,0,10%)] hover:shadow-[0_6px_20px_0_rgb(0,0,0,20%)] transition-all duration-300 ease-out hover:scale-105 active:scale-95 group"
                 >
                   Comenzar Análisis
@@ -67,7 +67,7 @@ function HeroSection1() {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-muted-foreground">Estado Emocional</h3>
                     <div className="flex items-center space-x-2">
-                      <Frown className="w-5 h-5 text-destructive" /> 
+                      <Frown className="w-5 h-5 text-destructive" />
                       <span className="text-foreground font-medium">Negativo</span>
                     </div>
                   </div>
@@ -89,14 +89,25 @@ function HeroSection1() {
 
 
 export default function WelcomePage() {
+  const [year, setYear] = useState<number | string>('');
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center bg-background">
       <HeroSection1 />
 
+       {/* Footer Section */}
        <footer className="w-full py-6 bg-background border-t">
           <div className="container px-4 md:px-6 text-center text-muted-foreground text-sm">
-              © {new Date().getFullYear()} Alumbra. Todos los derechos reservados.
-              <p className="text-xs mt-1">Tu información es privada. El análisis se procesa de forma segura.</p>
+            {year ? (
+              <p>© {year} Alumbra. Todos los derechos reservados.</p>
+            ) : (
+              <p>© Alumbra. Todos los derechos reservados.</p> // Fallback during SSR and initial client render
+            )}
+            <p className="text-xs mt-1">Tu información es privada. El análisis se procesa de forma segura.</p>
           </div>
        </footer>
     </main>
