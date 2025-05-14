@@ -87,7 +87,7 @@ export default function SupportPage() {
 
        <div className="mt-12 text-center">
             <p className="text-muted-foreground">
-                ¿No encuentras lo que buscas? Visita nuestra <Link href="/community" className="text-primary hover:underline">comunidad</Link> o <Link href="/contact" className="text-primary hover:underline">contáctanos</Link> de otras formas.
+                ¿No encuentras lo que buscas? Visita nuestra <span className="text-primary">comunidad</span> o <span className="text-primary">contáctanos</span> de otras formas. (Estas páginas necesitan ser creadas).
             </p>
        </div>
     </div>

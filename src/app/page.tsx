@@ -4,9 +4,9 @@
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight } from 'lucide-react';
+import { AlertTriangle, Frown, ArrowRight } from 'lucide-react'; 
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"; 
 
 // Define the HeroSection1 component
 function HeroSection1() {
@@ -67,7 +67,7 @@ function HeroSection1() {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-muted-foreground">Estado Emocional</h3>
                     <div className="flex items-center space-x-2">
-                      <Frown className="w-5 h-5 text-red-600" />
+                      <Frown className="w-5 h-5 text-destructive" /> 
                       <span className="text-foreground font-medium">Negativo</span>
                     </div>
                   </div>
@@ -86,6 +86,7 @@ function HeroSection1() {
     </section>
   );
 }
+
 
 export default function WelcomePage() {
   return (
