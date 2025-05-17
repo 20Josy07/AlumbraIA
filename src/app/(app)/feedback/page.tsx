@@ -13,10 +13,12 @@ import { FeedbackSchema, type FeedbackData } from '@/lib/schemas';
 import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/ui/spinner';
 import { Send, MessageSquare } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context'; // Import useAuth
 
 export default function FeedbackPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { user } = useAuth(); // Get user from AuthContext
 
   const form = useForm<FeedbackData>({
     resolver: zodResolver(FeedbackSchema),
@@ -26,8 +28,23 @@ export default function FeedbackPage() {
   });
 
   async function onSubmit(data: FeedbackData) {
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Inicio de Sesión Requerido',
+        description: 'Debes iniciar sesión con Google para enviar comentarios.',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
-    const result = await handleFeedbackSubmission(data);
+    // Pass user details along with feedback text
+    const result = await handleFeedbackSubmission({
+      feedbackText: data.feedbackText,
+      userId: user.uid,
+      userName: user.displayName,
+      userPhotoURL: user.photoURL,
+    });
     setIsSubmitting(false);
 
     if (result.success) {
@@ -54,7 +71,7 @@ export default function FeedbackPage() {
             Enviar Comentarios
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Nos encantaría escuchar tu opinión. Por favor, comparte tus comentarios, sugerencias o reporta cualquier problema.
+            Nos encantaría escuchar tu opinión. Tu nombre y foto de perfil (si has iniciado sesión con Google) podrían mostrarse con tu comentario.
           </CardDescription>
         </CardHeader>
         <CardContent>

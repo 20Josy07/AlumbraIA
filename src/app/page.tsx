@@ -10,7 +10,8 @@ import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
 import TerminalTextAnimation from '@/components/ui/terminal-text-animation'; 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { getReviews, type Review } from '@/app/actions'; // Import getReviews and Review type
+import { Spinner } from '@/components/ui/spinner'; // Import Spinner
 
 const conversationExampleText = `"Eres estúpido, ¿Cómo pudiste hacer eso? ¡Eres un idiota!"
 "Cálmate, fue un error..."
@@ -93,10 +94,10 @@ function HeroSection1() {
 }
 
 interface TestimonialCardProps {
-  avatarSrc: string;
+  avatarSrc: string | null; // Can be null if no photoURL
   avatarFallback: string;
-  name: string;
-  role: string;
+  name: string | null; // Can be null
+  role?: string; // Role is optional now
   testimonial: string;
   imageHint?: string;
 }
@@ -106,7 +107,9 @@ function TestimonialCard({ avatarSrc, avatarFallback, name, role, testimonial, i
     <Card className="bg-card shadow-lg rounded-lg overflow-hidden flex flex-col">
       <CardContent className="p-6 flex-grow flex flex-col items-center text-center space-y-4">
         <Avatar className="w-20 h-20 mb-2">
-          <AvatarImage src={avatarSrc} alt={name} data-ai-hint={imageHint || "person portrait"} />
+          {avatarSrc ? (
+             <AvatarImage src={avatarSrc} alt={name || 'Usuario'} data-ai-hint={imageHint || "person portrait"} />
+          ) : null }
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
         <div className="flex items-center">
@@ -116,20 +119,45 @@ function TestimonialCard({ avatarSrc, avatarFallback, name, role, testimonial, i
         </div>
         <p className="text-muted-foreground italic text-sm leading-relaxed">"{testimonial}"</p>
         <div>
-          <p className="font-semibold text-foreground">{name}</p>
-          <p className="text-xs text-muted-foreground">{role}</p>
+          <p className="font-semibold text-foreground">{name || 'Usuario Anónimo'}</p>
+          {role && <p className="text-xs text-muted-foreground">{role}</p>}
         </div>
       </CardContent>
     </Card>
   );
 }
 
+const getInitials = (name: string | null | undefined): string => {
+    if (!name) return 'A'; // Default for "Anónimo"
+    const names = name.split(' ');
+    if (names.length === 0 || names[0] === "") return 'A';
+    if (names.length === 1) return names[0].substring(0, 2).toUpperCase();
+    return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+};
+
 
 export default function WelcomePage() {
   const [year, setYear] = useState<number | string>('');
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+  const [reviewsError, setReviewsError] = useState<string | null>(null);
 
   useEffect(() => {
     setYear(new Date().getFullYear());
+
+    async function fetchReviews() {
+      setIsLoadingReviews(true);
+      setReviewsError(null);
+      const result = await getReviews();
+      if (result.reviews) {
+        setReviews(result.reviews);
+      } else if (result.error) {
+        setReviewsError(result.error);
+        console.error("Error fetching reviews:", result.error);
+      }
+      setIsLoadingReviews(false);
+    }
+    fetchReviews();
   }, []);
 
   return (
@@ -141,35 +169,39 @@ export default function WelcomePage() {
           <h2 className="text-3xl font-bold tracking-tighter text-center mb-10 sm:text-4xl md:text-5xl text-primary">
             Lo que dicen nuestros usuarios
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            <TestimonialCard
-              avatarSrc="https://placehold.co/80x80.png"
-              imageHint="woman smiling"
-              avatarFallback="AN"
-              name="Ana N."
-              role="Usuaria de Alumbra"
-              testimonial="Esta herramienta me abrió los ojos a patrones que no veía en mi relación. Sentirme escuchada y validada fue un gran paso."
-            />
-            <TestimonialCard
-              avatarSrc="https://placehold.co/80x80.png"
-              imageHint="man thinking"
-              avatarFallback="LC"
-              name="Luis C."
-              role="Usuario Verificado"
-              testimonial="Alumbra me ayudó a entender mejor las dinámicas de comunicación con mi familia. Muy útil para reflexionar."
-            />
-            <TestimonialCard
-              avatarSrc="https://placehold.co/80x80.png"
-              imageHint="person neutral expression"
-              avatarFallback="SF"
-              name="Sofía F."
-              role="Beta Tester"
-              testimonial="Increíble cómo la IA puede detectar sutilezas en el lenguaje. Me dio la claridad que necesitaba para tomar decisiones."
-            />
-          </div>
+          {isLoadingReviews && (
+            <div className="flex justify-center items-center py-10">
+              <Spinner size={48} />
+              <p className="ml-4 text-muted-foreground">Cargando comentarios...</p>
+            </div>
+          )}
+          {reviewsError && !isLoadingReviews && (
+            <div className="text-center py-10 text-destructive">
+              <p>Error al cargar comentarios: {reviewsError}</p>
+            </div>
+          )}
+          {!isLoadingReviews && !reviewsError && reviews.length === 0 && (
+            <div className="text-center py-10 text-muted-foreground">
+              <p>Aún no hay comentarios. ¡Sé el primero!</p>
+            </div>
+          )}
+          {!isLoadingReviews && !reviewsError && reviews.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+              {reviews.map((review) => (
+                <TestimonialCard
+                  key={review.id}
+                  avatarSrc={review.userPhotoURL}
+                  avatarFallback={getInitials(review.userName)}
+                  name={review.userName}
+                  // role="Usuario de Alumbra" // Role can be generic or omitted
+                  testimonial={review.text}
+                  imageHint={review.userPhotoURL ? "person" : undefined}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
-
 
        {/* Footer Section */}
        <footer className="w-full py-6 bg-background border-t border-border">
