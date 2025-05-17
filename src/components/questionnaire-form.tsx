@@ -167,9 +167,13 @@ export default function QuestionnaireForm({ onSuccess, isSubmittingPrimary }: Qu
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel htmlFor="acceptedTerms" className="text-muted-foreground">
-                      He leído y acepto los{' '}
-                      <Link href="/terms" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
-                        Términos y Condiciones
+                      He leído y acepto la{' '}
+                      <Link href="/privacy-policy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                        Política de Privacidad
+                      </Link>
+                      {' '}y la{' '}
+                      <Link href="/security-policy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                        Política de Seguridad
                       </Link>
                       .
                     </FormLabel>

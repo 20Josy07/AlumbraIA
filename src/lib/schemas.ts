@@ -18,7 +18,7 @@ export const QuestionnaireSchema = z.object({
     required_error: 'Por favor responde esta pregunta.',
   }),
   acceptedTerms: z.boolean().refine((val) => val === true, {
-    message: 'Debes aceptar los Términos y Condiciones para continuar.',
+    message: 'Debes aceptar la Política de Privacidad y la Política de Seguridad para continuar.',
   }),
 });
 
