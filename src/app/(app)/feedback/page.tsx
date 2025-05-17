@@ -37,6 +37,17 @@ export default function FeedbackPage() {
       return;
     }
 
+    // Añadir una comprobación más específica para uid, aunque `if (!user)` debería cubrirlo.
+    if (!user.uid) {
+        toast({
+            variant: 'destructive',
+            title: 'Error de Usuario',
+            description: 'No se pudo obtener el ID de usuario. Intenta iniciar sesión de nuevo.',
+        });
+        setIsSubmitting(false); // Asegurar que el botón se rehabilite
+        return;
+    }
+
     setIsSubmitting(true);
     // Pass user details along with feedback text
     const result = await handleFeedbackSubmission({
