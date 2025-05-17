@@ -64,7 +64,7 @@ interface UserDetailsActionResult {
 export async function handleUserDetailsSubmission(data: UserDetailsData): Promise<UserDetailsActionResult> {
   try {
     console.log('User details received:', data);
-    await new Promise(resolve => setTimeout(resolve, 1000)); 
+    await new Promise(resolve => setTimeout(resolve, 1000));
     return { success: true, data };
   } catch (e) {
     console.error("Error submitting user details:", e);
@@ -110,8 +110,20 @@ export async function handleFeedbackSubmission(data: FeedbackSubmissionData): Pr
     return { success: true, message: 'Comentario guardado con éxito.' };
 
   } catch (e) {
-    console.error("Error saving feedback to Firestore:", e);
-    const errorMessage = e instanceof Error ? e.message : 'Ocurrió un error inesperado al guardar tu comentario.';
+    console.error("Error saving feedback to Firestore (server action):", e);
+    let errorMessage = 'Ocurrió un error inesperado al guardar tu comentario.';
+    if (e instanceof Error) {
+      errorMessage = e.message;
+    } else if (typeof e === 'string') {
+      errorMessage = e;
+    } else if (e && typeof (e as any).toString === 'function') {
+      // Try to get a string representation if it's an unknown object
+      errorMessage = (e as any).toString();
+    }
+    // Ensure the error message doesn't become too long or complex for the response
+    if (errorMessage.length > 200) {
+        errorMessage = errorMessage.substring(0, 200) + "... (truncated)";
+    }
     return { success: false, error: `Error al guardar el comentario: ${errorMessage}` };
   }
 }
@@ -157,3 +169,4 @@ export async function getReviews(): Promise<GetReviewsResult> {
     return { error: errorMessage };
   }
 }
+
