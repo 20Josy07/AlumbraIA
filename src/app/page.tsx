@@ -1,14 +1,21 @@
+
 'use client';
 
-import React, { useState, useEffect } from 'react'; // Import useState, useEffect
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight } from 'lucide-react';
+import { AlertTriangle, Frown, ArrowRight, Star, UserCircle } from 'lucide-react';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
+import TerminalTextAnimation from '@/components/ui/terminal-text-animation'; // Import the new component
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Define the HeroSection1 component
+
+const conversationExampleText = `"Eres estúpido, ¿Cómo pudiste hacer eso? ¡Eres un idiota!"
+"Cálmate, fue un error..."
+"¡Un error! Siempre arruinas todo. No sirves para nada."`;
+
 function HeroSection1() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 xl:py-40 bg-background">
@@ -60,9 +67,7 @@ function HeroSection1() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="bg-secondary/50 p-4 rounded-md text-sm text-secondary-foreground">
-                     <p>"Eres estúpido, ¿Cómo pudiste hacer eso? ¡Eres un idiota!"</p>
-                     <p>"Cálmate, fue un error..."</p>
-                     <p>"¡Un error! Siempre arruinas todo. No sirves para nada."</p>
+                     <TerminalTextAnimation textToType={conversationExampleText} />
                   </div>
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold text-muted-foreground">Estado Emocional</h3>
@@ -87,6 +92,38 @@ function HeroSection1() {
   );
 }
 
+interface TestimonialCardProps {
+  avatarSrc: string;
+  avatarFallback: string;
+  name: string;
+  role: string;
+  testimonial: string;
+  imageHint?: string;
+}
+
+function TestimonialCard({ avatarSrc, avatarFallback, name, role, testimonial, imageHint }: TestimonialCardProps) {
+  return (
+    <Card className="bg-card shadow-lg rounded-lg overflow-hidden flex flex-col">
+      <CardContent className="p-6 flex-grow flex flex-col items-center text-center space-y-4">
+        <Avatar className="w-20 h-20 mb-2">
+          <AvatarImage src={avatarSrc} alt={name} data-ai-hint={imageHint || "person portrait"} />
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
+        </Avatar>
+        <div className="flex items-center">
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+          ))}
+        </div>
+        <p className="text-muted-foreground italic text-sm leading-relaxed">"{testimonial}"</p>
+        <div>
+          <p className="font-semibold text-foreground">{name}</p>
+          <p className="text-xs text-muted-foreground">{role}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 
 export default function WelcomePage() {
   const [year, setYear] = useState<number | string>('');
@@ -98,14 +135,49 @@ export default function WelcomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-background">
       <HeroSection1 />
+      
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-muted/20">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tighter text-center mb-10 sm:text-4xl md:text-5xl text-primary">
+            Lo que dicen nuestros usuarios
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            <TestimonialCard
+              avatarSrc="https://placehold.co/80x80.png"
+              imageHint="woman smiling"
+              avatarFallback="AN"
+              name="Ana N."
+              role="Usuaria de Alumbra"
+              testimonial="Esta herramienta me abrió los ojos a patrones que no veía en mi relación. Sentirme escuchada y validada fue un gran paso."
+            />
+            <TestimonialCard
+              avatarSrc="https://placehold.co/80x80.png"
+              imageHint="man thinking"
+              avatarFallback="LC"
+              name="Luis C."
+              role="Usuario Verificado"
+              testimonial="Alumbra me ayudó a entender mejor las dinámicas de comunicación con mi familia. Muy útil para reflexionar."
+            />
+            <TestimonialCard
+              avatarSrc="https://placehold.co/80x80.png"
+              imageHint="person neutral expression"
+              avatarFallback="SF"
+              name="Sofía F."
+              role="Beta Tester"
+              testimonial="Increíble cómo la IA puede detectar sutilezas en el lenguaje. Me dio la claridad que necesitaba para tomar decisiones."
+            />
+          </div>
+        </div>
+      </section>
+
 
        {/* Footer Section */}
-       <footer className="w-full py-6 bg-background border-t">
+       <footer className="w-full py-6 bg-background border-t border-border">
           <div className="container px-4 md:px-6 text-center text-muted-foreground text-sm">
             {year ? (
               <p>© {year} Alumbra. Todos los derechos reservados.</p>
             ) : (
-              <p>© Alumbra. Todos los derechos reservados.</p> // Fallback during SSR and initial client render
+              <p>© Alumbra. Todos los derechos reservados.</p>
             )}
             <p className="text-xs mt-1">Tu información es privada. El análisis se procesa de forma segura.</p>
           </div>

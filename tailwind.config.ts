@@ -84,15 +84,20 @@ export default {
   					height: '0'
   				}
   			},
-        'gradient': { // Renamed from 'shimmer' to 'gradient' to match 'animate-gradient'
+        'gradient': { 
           '0%': { backgroundPosition: '200% center' },
           '100%': { backgroundPosition: '-200% center' },
+        },
+        'blink-cursor-soft': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
         },
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
-        'gradient': 'gradient 3s linear infinite', // Corresponds to 'animate-gradient'
+        'gradient': 'gradient 3s linear infinite',
+        'blink-cursor-soft': 'blink-cursor-soft 1.2s step-end infinite',
   		}
   	}
   },
