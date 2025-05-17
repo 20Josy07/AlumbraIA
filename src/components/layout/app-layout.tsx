@@ -13,18 +13,12 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { MessageSquareText, LifeBuoy, ArrowLeft, FileQuestion, MessageCircle, Shield, Lock } from 'lucide-react'; 
+import { MessageSquareText, LifeBuoy, ArrowLeft, FileQuestion, MessageCircle, Shield, Lock } from 'lucide-react';
 import SidebarNav from './sidebar-nav';
 import { usePathname } from 'next/navigation';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
 import AuthButton from '@/components/auth/auth-button';
 
 interface AppLayoutProps {
@@ -51,33 +45,24 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
         <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2 md:gap-3">
-            <div className="group-data-[collapsible=icon]/sidebar-wrapper:hidden md:ml-0"> 
-              <TooltipProvider delayDuration={0}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link href="/" passHref>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="text-sidebar-foreground hover:bg-sidebar-accent"
-                        aria-label="Volver a Inicio"
-                      >
-                        <ArrowLeft className="h-5 w-5" />
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" align="center" sideOffset={8}>
-                    Volver a Inicio
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <div className="group-data-[collapsible=icon]/sidebar-wrapper:hidden md:ml-0">
+              <Link href="/" passHref>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-sidebar-foreground hover:bg-sidebar-accent"
+                  aria-label="Volver a Inicio"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
             </div>
-            
-            <div className="flex-grow text-center md:text-left md:flex-none"> 
-                <Link href="/" className="inline-block text-lg font-semibold text-sidebar-primary hover:opacity-80 transition-opacity">
+
+            <div className="flex-grow text-center md:text-left md:flex-none">
+                <Link href="/" className="inline-block text-lg font-semibold text-sidebar-primary transition-opacity">
                 <AnimatedShinyText
                     className={cn(
-                    `text-2xl md:text-3xl font-bold inline animate-gradient bg-gradient-to-r from-purple-500 via-yellow-300 to-purple-500 bg-[length:var(--shimmer-width)_100%] bg-clip-text text-transparent` 
+                    `text-2xl md:text-3xl font-bold inline animate-gradient bg-gradient-to-r from-purple-500 via-yellow-300 to-purple-500 bg-[length:var(--shimmer-width)_100%] bg-clip-text text-transparent`
                     )}
                 >
                     Alumbra
@@ -96,9 +81,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <div className="space-y-1 group-data-[collapsible=icon]/sidebar-wrapper:hidden">
               {policyNavItems.map(item => (
                 <Link key={item.href} href={item.href} passHref>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     className="w-full justify-start text-xs text-sidebar-foreground/70 hover:text-sidebar-foreground/90 hover:bg-sidebar-accent/50"
                   >
                     <item.icon className="mr-2 h-3.5 w-3.5" />
@@ -117,8 +102,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1">
               <h1 className="font-semibold text-lg text-foreground">
-                {navItems.find(item => pathname.startsWith(item.href))?.label || 
-                 policyNavItems.find(item => pathname.startsWith(item.href))?.label || 
+                {navItems.find(item => pathname.startsWith(item.href))?.label ||
+                 policyNavItems.find(item => pathname.startsWith(item.href))?.label ||
                  'Alumbra AI'}
               </h1>
             </div>
