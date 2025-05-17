@@ -1,14 +1,10 @@
 
 'use server';
 
-// Remove fs and path as they are no longer needed for local file saving
-// import fs from 'fs/promises';
-// import path from 'path';
 import { analyzeConversation, type AnalyzeConversationInput, type AnalyzeConversationOutput } from '@/ai/flows/analyze-conversation';
-import type { QuestionnaireData, UserDetailsData } from '@/lib/schemas'; // FeedbackData removed from here
-import { db } from '@/lib/firebase'; // Import Firestore instance
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore'; // Firestore functions
-import type { User } from 'firebase/auth';
+import type { QuestionnaireData, UserDetailsData } from '@/lib/schemas'; 
+import { db } from '@/lib/firebase'; 
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore'; 
 
 interface AnalysisActionResult {
   data?: AnalyzeConversationOutput;
@@ -73,7 +69,6 @@ export async function handleUserDetailsSubmission(data: UserDetailsData): Promis
   }
 }
 
-// Interface for the data passed to handleFeedbackSubmission
 interface FeedbackSubmissionData {
   feedbackText: string;
   userId: string;
@@ -87,39 +82,55 @@ interface FeedbackActionResult {
   message?: string;
 }
 
-// Rewritten to save to Firestore
 export async function handleFeedbackSubmission(data: FeedbackSubmissionData): Promise<FeedbackActionResult> {
+  console.log("SERVER_ACTION_LOG: handleFeedbackSubmission invoked with data:", JSON.stringify(data, null, 2));
+
   if (!data.feedbackText || data.feedbackText.trim() === "") {
+    console.error("SERVER_ACTION_ERROR: Feedback text is empty.");
     return { success: false, error: "El comentario no puede estar vacío." };
   }
   if (!data.userId) {
+    console.error("SERVER_ACTION_ERROR: User ID is missing.");
     return { success: false, error: "Se requiere información de usuario para enviar comentarios."}
   }
 
   try {
     const reviewData = {
       userId: data.userId,
-      userName: data.userName || "Anónimo", // Default to Anónimo if name is null
+      userName: data.userName || "Anónimo", 
       userPhotoURL: data.userPhotoURL,
       text: data.feedbackText,
       createdAt: serverTimestamp(),
     };
 
-    await addDoc(collection(db, "reviews"), reviewData);
+    console.log("SERVER_ACTION_LOG: Firestore db instance:", db ? "Exists" : "DOES NOT EXIST - CRITICAL");
+    if (db && db.app && db.app.options) {
+      console.log("SERVER_ACTION_LOG: Firestore db associated projectId:", db.app.options.projectId);
+    } else {
+      console.log("SERVER_ACTION_LOG: Cannot log projectId, db or db.app.options is not fully available.");
+    }
+    console.log("SERVER_ACTION_LOG: Attempting to add document to 'reviews' collection with data:", JSON.stringify(reviewData, null, 2));
 
+    const docRef = await addDoc(collection(db, "reviews"), reviewData);
+
+    console.log("SERVER_ACTION_LOG: Document written with ID: ", docRef.id);
     return { success: true, message: 'Comentario guardado con éxito.' };
 
-  } catch (e) {
-    console.error("Error saving feedback to Firestore (server action):", e);
+  } catch (e: any) {
+    console.error("SERVER_ACTION_ERROR: Error saving feedback to Firestore:", e);
     let errorMessage = 'Ocurrió un error inesperado al guardar tu comentario.';
-    if (e instanceof Error) {
+    
+    if (e && typeof e.message === 'string') {
       errorMessage = e.message;
     } else if (typeof e === 'string') {
       errorMessage = e;
-    } else if (e && typeof (e as any).toString === 'function') {
-      // Try to get a string representation if it's an unknown object
-      errorMessage = (e as any).toString();
     }
+    
+    // Log the full error structure for more details if available
+    if (typeof e === 'object' && e !== null) {
+        console.error("SERVER_ACTION_ERROR_DETAILS:", JSON.stringify(e, Object.getOwnPropertyNames(e)));
+    }
+
     // Ensure the error message doesn't become too long or complex for the response
     if (errorMessage.length > 200) {
         errorMessage = errorMessage.substring(0, 200) + "... (truncated)";
@@ -128,14 +139,13 @@ export async function handleFeedbackSubmission(data: FeedbackSubmissionData): Pr
   }
 }
 
-// New interface for Review data structure
 export interface Review {
   id: string;
   userId: string;
   userName: string | null;
   userPhotoURL: string | null;
   text: string;
-  createdAt: number; // Store as number (timestamp) for easier client-side handling
+  createdAt: number; 
 }
 
 interface GetReviewsResult {
@@ -158,7 +168,6 @@ export async function getReviews(): Promise<GetReviewsResult> {
         userName: data.userName,
         userPhotoURL: data.userPhotoURL,
         text: data.text,
-        // Convert Firestore Timestamp to number (milliseconds since epoch)
         createdAt: data.createdAt?.toMillis ? data.createdAt.toMillis() : Date.now(), 
       });
     });
@@ -169,4 +178,3 @@ export async function getReviews(): Promise<GetReviewsResult> {
     return { error: errorMessage };
   }
 }
-
