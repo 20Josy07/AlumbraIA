@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight, Star, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { AlertTriangle, Frown, ArrowRight, Star, Twitter, Instagram, Linkedin, Shield, Lock } from 'lucide-react';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
 import TerminalTextAnimation from '@/components/ui/terminal-text-animation';
@@ -13,6 +13,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getReviews, type Review } from '@/app/actions';
 import { Spinner } from '@/components/ui/spinner';
 import { Separator } from '@/components/ui/separator';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 
 const conversationExampleText = `"Eres estúpido, ¿Cómo pudiste hacer eso? ¡Eres un idiota!"
@@ -211,7 +221,6 @@ export default function WelcomePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center mb-4">
-                  {/* <span className="text-3xl font-bold text-primary mr-2">A</span> Removed A logo */}
                   <h3 className="text-xl font-semibold text-foreground">Alumbra</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">Iluminando tus conversaciones y relaciones.</p>
@@ -229,7 +238,24 @@ export default function WelcomePage() {
                 <ul className="space-y-2 text-sm">
                   <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
                   <li><Link href="/support" className="text-muted-foreground hover:text-primary transition-colors">Soporte</Link></li>
-                  <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Comunidad</Link></li>
+                  <li>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button className="text-muted-foreground hover:text-primary transition-colors text-left w-full text-sm p-0 m-0 h-auto bg-transparent">Comunidad</button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-card border-border text-card-foreground">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-primary">¡Síguenos!</AlertDialogTitle>
+                          <AlertDialogDescription className="text-muted-foreground">
+                            Síguenos en nuestras redes sociales: alumbra.ia
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogAction className="bg-primary text-primary-foreground hover:bg-primary/90">Entendido</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </li>
                 </ul>
               </div>
               <div>
@@ -244,7 +270,6 @@ export default function WelcomePage() {
 
             <Separator className="bg-border my-8" />
 
-            {/* Modified bottom section of the footer */}
             <div className="text-center text-sm text-muted-foreground">
               {year ? (
                 <p className="mb-2">© {year} Alumbra. Todos los derechos reservados.</p>
@@ -267,4 +292,3 @@ export default function WelcomePage() {
     </main>
   );
 }
-
