@@ -5,13 +5,15 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight, Star } from 'lucide-react';
+import { AlertTriangle, Frown, ArrowRight, Star, Twitter, Instagram, Linkedin } from 'lucide-react';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
-import TerminalTextAnimation from '@/components/ui/terminal-text-animation'; 
+import TerminalTextAnimation from '@/components/ui/terminal-text-animation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getReviews, type Review } from '@/app/actions'; // Import getReviews and Review type
-import { Spinner } from '@/components/ui/spinner'; // Import Spinner
+import { getReviews, type Review } from '@/app/actions';
+import { Spinner } from '@/components/ui/spinner';
+import { Separator } from '@/components/ui/separator';
+
 
 const conversationExampleText = `"Eres estúpido, ¿Cómo pudiste hacer eso? ¡Eres un idiota!"
 "Cálmate, fue un error..."
@@ -94,10 +96,10 @@ function HeroSection1() {
 }
 
 interface TestimonialCardProps {
-  avatarSrc: string | null; // Can be null if no photoURL
+  avatarSrc: string | null;
   avatarFallback: string;
-  name: string | null; // Can be null
-  role?: string; // Role is optional now
+  name: string | null;
+  role?: string;
   testimonial: string;
   imageHint?: string;
 }
@@ -128,7 +130,7 @@ function TestimonialCard({ avatarSrc, avatarFallback, name, role, testimonial, i
 }
 
 const getInitials = (name: string | null | undefined): string => {
-    if (!name) return 'A'; // Default for "Anónimo"
+    if (!name) return 'A';
     const names = name.split(' ');
     if (names.length === 0 || names[0] === "") return 'A';
     if (names.length === 1) return names[0].substring(0, 2).toUpperCase();
@@ -163,7 +165,7 @@ export default function WelcomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-background">
       <HeroSection1 />
-      
+
       <section className="w-full py-12 md:py-20 lg:py-24 bg-muted/20">
         <div className="container px-4 md:px-6">
           <h2 className="text-3xl font-bold tracking-tighter text-center mb-10 sm:text-4xl md:text-5xl text-primary">
@@ -193,7 +195,6 @@ export default function WelcomePage() {
                   avatarSrc={review.userPhotoURL}
                   avatarFallback={getInitials(review.userName)}
                   name={review.userName}
-                  // role="Usuario de Alumbra" // Role can be generic or omitted
                   testimonial={review.text}
                   imageHint={review.userPhotoURL ? "person" : undefined}
                 />
@@ -204,23 +205,63 @@ export default function WelcomePage() {
       </section>
 
        {/* Footer Section */}
-       <footer className="w-full py-6 bg-background border-t border-border">
-          <div className="container px-4 md:px-6 text-center text-muted-foreground text-sm">
-            {year ? (
-              <p>© {year} Alumbra. Todos los derechos reservados.</p>
-            ) : (
-              <p>© Alumbra. Todos los derechos reservados.</p>
-            )}
-            <div className="mt-2 space-x-4">
-              <Link href="/privacy-policy" className="hover:text-primary transition-colors">
-                Política de Privacidad
-              </Link>
-              <span className="text-muted-foreground/50">|</span>
-              <Link href="/security-policy" className="hover:text-primary transition-colors">
-                Política de Seguridad
-              </Link>
+       <footer className="w-full bg-card text-card-foreground py-12">
+          <div className="container px-4 md:px-6">
+            {/* Multi-column layout from previous design - REMAINS UNCHANGED */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+              <div>
+                <div className="flex items-center mb-4">
+                  <span className="text-3xl font-bold text-primary mr-2">A</span>
+                  <h3 className="text-xl font-semibold text-foreground">Alumbra</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">Iluminando tus conversaciones y relaciones.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-3">Producto</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Características</Link></li>
+                  <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Precios</Link></li>
+                  <li><Link href="/support" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-3">Recursos</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
+                  <li><Link href="/support" className="text-muted-foreground hover:text-primary transition-colors">Soporte</Link></li>
+                  <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Comunidad</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-3">Legal</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors">Política de Privacidad</Link></li>
+                  <li><Link href="/security-policy" className="text-muted-foreground hover:text-primary transition-colors">Política de Seguridad</Link></li>
+                  <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Términos de Servicio</Link></li>
+                </ul>
+              </div>
             </div>
-            <p className="text-xs mt-2">Tu información es privada. El análisis se procesa de forma segura.</p>
+
+            <Separator className="bg-border my-8" />
+
+            {/* Modified bottom section of the footer */}
+            <div className="text-center text-sm text-muted-foreground">
+              {year ? (
+                <p className="mb-2">© {year} Alumbra. Todos los derechos reservados.</p>
+              ) : (
+                <p className="mb-2">© Alumbra. Todos los derechos reservados.</p>
+              )}
+              <div className="mb-2">
+                <Link href="/privacy-policy" className="hover:text-primary transition-colors">
+                  Política de Privacidad
+                </Link>
+                <span className="mx-2 text-muted-foreground/50">|</span>
+                <Link href="/security-policy" className="hover:text-primary transition-colors">
+                  Política de Seguridad
+                </Link>
+              </div>
+              <p className="text-xs">Tu información es privada. El análisis se procesa de forma segura.</p>
+            </div>
           </div>
        </footer>
     </main>
