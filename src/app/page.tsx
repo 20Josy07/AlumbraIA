@@ -5,10 +5,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight, Star, UserCircle } from 'lucide-react';
+import { AlertTriangle, Frown, ArrowRight, Star } from 'lucide-react';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
-import TerminalTextAnimation from '@/components/ui/terminal-text-animation'; // Import the new component
+import TerminalTextAnimation from '@/components/ui/terminal-text-animation'; 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
@@ -179,7 +179,16 @@ export default function WelcomePage() {
             ) : (
               <p>© Alumbra. Todos los derechos reservados.</p>
             )}
-            <p className="text-xs mt-1">Tu información es privada. El análisis se procesa de forma segura.</p>
+            <div className="mt-2 space-x-4">
+              <Link href="/privacy-policy" className="hover:text-primary transition-colors">
+                Política de Privacidad
+              </Link>
+              <span className="text-muted-foreground/50">|</span>
+              <Link href="/security-policy" className="hover:text-primary transition-colors">
+                Política de Seguridad
+              </Link>
+            </div>
+            <p className="text-xs mt-2">Tu información es privada. El análisis se procesa de forma segura.</p>
           </div>
        </footer>
     </main>
