@@ -37,39 +37,46 @@ export default function FeedbackPage() {
       return;
     }
 
-    // Añadir una comprobación más específica para uid, aunque `if (!user)` debería cubrirlo.
     if (!user.uid) {
         toast({
             variant: 'destructive',
             title: 'Error de Usuario',
             description: 'No se pudo obtener el ID de usuario. Intenta iniciar sesión de nuevo.',
         });
-        setIsSubmitting(false); // Asegurar que el botón se rehabilite
         return;
     }
 
     setIsSubmitting(true);
-    // Pass user details along with feedback text
-    const result = await handleFeedbackSubmission({
-      feedbackText: data.feedbackText,
-      userId: user.uid,
-      userName: user.displayName,
-      userPhotoURL: user.photoURL,
-    });
-    setIsSubmitting(false);
-
-    if (result.success) {
-      toast({
-        title: 'Comentario Enviado',
-        description: result.message || '¡Gracias por tu feedback!',
+    try {
+      const result = await handleFeedbackSubmission({
+        feedbackText: data.feedbackText,
+        userId: user.uid,
+        userName: user.displayName,
+        userPhotoURL: user.photoURL,
       });
-      form.reset();
-    } else {
+
+      if (result.success) {
+        toast({
+          title: 'Comentario Enviado',
+          description: result.message || '¡Gracias por tu feedback!',
+        });
+        form.reset();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error al Enviar',
+          description: result.error || 'No se pudo enviar tu comentario. Inténtalo de nuevo.',
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting feedback from page:", error);
       toast({
         variant: 'destructive',
-        title: 'Error al Enviar',
-        description: result.error || 'No se pudo enviar tu comentario. Inténtalo de nuevo.',
+        title: 'Error Inesperado',
+        description: 'Ocurrió un error inesperado al enviar tu comentario. Revisa la consola para más detalles.',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
