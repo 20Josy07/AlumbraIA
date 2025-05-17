@@ -207,11 +207,11 @@ export default function WelcomePage() {
        {/* Footer Section */}
        <footer className="w-full bg-card text-card-foreground py-12">
           <div className="container px-4 md:px-6">
-            {/* Multi-column layout from previous design - REMAINS UNCHANGED */}
+            {/* Multi-column layout from previous design */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center mb-4">
-                  <span className="text-3xl font-bold text-primary mr-2">A</span>
+                  {/* <span className="text-3xl font-bold text-primary mr-2">A</span> Removed A logo */}
                   <h3 className="text-xl font-semibold text-foreground">Alumbra</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">Iluminando tus conversaciones y relaciones.</p>
@@ -267,3 +267,4 @@ export default function WelcomePage() {
     </main>
   );
 }
+
