@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import AuthButton from '@/components/auth/auth-button'; // Import the new AuthButton
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -83,7 +84,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <SidebarContent className="p-2">
           <SidebarNav items={navItems} currentPath={pathname} />
         </SidebarContent>
-        <SidebarFooter className="p-4 border-t border-sidebar-border">
+        <SidebarFooter className="p-2 border-t border-sidebar-border flex flex-col gap-2">
+            <AuthButton /> 
             <p className="text-xs text-sidebar-foreground/60 text-center group-data-[collapsible=icon]/sidebar-wrapper:hidden">
               © {new Date().getFullYear()} Alumbra AI
             </p>
