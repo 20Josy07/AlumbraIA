@@ -3,9 +3,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // Import next/image
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AlertTriangle, Frown, ArrowRight, Star, Twitter, Instagram, Linkedin, Shield, Lock } from 'lucide-react';
+import { AlertTriangle, Frown, ArrowRight, Star, Shield, Lock } from 'lucide-react';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import { cn } from "@/lib/utils";
 import TerminalTextAnimation from '@/components/ui/terminal-text-animation';
@@ -37,19 +38,28 @@ function HeroSection1() {
           {/* Left Column: Text and Button */}
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                <AnimatedShinyText
-                  className={cn(
-                    `inline animate-gradient bg-gradient-to-r from-purple-500 via-yellow-300 to-purple-500 bg-[length:var(--shimmer-width)_100%] bg-clip-text text-transparent`
-                  )}
-                >
-                    Alumbra:
-                </AnimatedShinyText>
-                 <br />
-                 <span style={{color: '#e7d6f1'}}>
+              <div className="flex items-center gap-3 mb-2"> {/* Flex container for logo and h1 */}
+                <Image
+                  src="/logo.png" // Assumes logo.png is in the public folder
+                  alt="Alumbra AI Logo"
+                  width={64} // Adjust size as needed
+                  height={64} // Adjust size as needed
+                  className="rounded-md"
+                  priority // Load logo quickly
+                />
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  <AnimatedShinyText
+                    className={cn(
+                      `inline animate-gradient bg-gradient-to-r from-purple-500 via-yellow-300 to-purple-500 bg-[length:var(--shimmer-width)_100%] bg-clip-text text-transparent`
+                    )}
+                  >
+                      Alumbra:
+                  </AnimatedShinyText>
+                </h1>
+              </div>
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl xl:text-4xl/none" style={{color: '#e7d6f1'}}>
                    Ponle luz a tus palabras, claridad a tus vínculos
-                 </span>
-              </h1>
+              </h2>
               <p className="max-w-[600px] text-muted-foreground md:text-xl">
                 Con una simple acción de copiar y pegar la última conversación, Alumbra podría esbozar un escenario preocupante que indique una señal de advertencia hacia tu salud emocional.
               </p>
@@ -217,7 +227,6 @@ export default function WelcomePage() {
        {/* Footer Section */}
        <footer className="w-full bg-card text-card-foreground py-12">
           <div className="container px-4 md:px-6">
-            {/* Multi-column layout from previous design */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center mb-4">
